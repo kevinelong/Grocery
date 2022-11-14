@@ -1,14 +1,38 @@
 <style>
+    body{
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding: 1em;
+        background: darkolivegreen;
+    }
     .product {
         display: inline-block;
         border: 1px solid black;
         margin: 1em;
+        min-width: 300px;
+        background: white;
+        line-height: 3em;
+        vertical-align: middle;
     }
-    .product a{
-        display: inline-block;
+
+    .product a {
+        display: block;
         padding: 1em;
+        vertical-align: middle;
+        line-height: 3em;
+        text-decoration: none;
+        color: black;
+    }
+    
+    .product a *{
+        vertical-align: middle;
+        line-height: 3em;
+    }
+    .icon{
+        width: 36px;
+        height: 36px;
     }
 </style>
+
 <body>
     <h1>Products</h1>
     <a href="index.html">Home</a>
@@ -24,61 +48,79 @@
     const results = document.getElementById("results");
     let select = undefined; //global scope
 
-    function productLink(p){
-        const d = document.createElement("div");
-        d.classList.add("product");
-        d.innerHTML = `<a href="detail.html?id=${p.productId}">${p.productName}</a>`;
-        return d
-    }
-    
-    function showAll(){
-        results.innerHTML="";
-        fetch("http://localhost:8081/api/products")
-        .then(response=>response.json())
-        .then(data=>{
-            data.forEach(p => {
-                results.appendChild(productLink(p));
-            })
-        })
-    }
-    function showResults(){
-        results.innerHTML="";
-        const id = select.selectedOptions[0].value;
-        fetch("http://localhost:8081/api/categories/" + id)
-        .then(response=>response.json())
-        .then(data=>{
-            data.forEach(p => {
-                results.appendChild(productLink(p));
-            })
-        })
-    }
-    function createSelect(){
-        select = document.createElement("select");
-        fetch("http://localhost:8081/api/categories")
-        .then(response=>response.json())
-        .then(data=>{
-            data.forEach(c => {
-                const option = document.createElement("option");
-                option.value = c.categoryId;
-                option.innerHTML = c.name;
-                select.appendChild(option);
-            })
-            select.addEventListener("change", e => showResults() )
-            mode.after(select);//insert new select after the mode select.
-            // document.body.appendChild(select);
-        })
+    function compareName(a, b) {
+        if (a.productName < b.productName) {
+            return -1;
+        } else if (a.productName > b.productName) {
+            return 1;
+        } else {
+            return 0; // a must be equal to b
+        }
     }
 
-    mode.addEventListener("change",e=>{
+    function productLink(p) {
+        const d = document.createElement("div");
+        d.classList.add("product");
+        d.innerHTML = `
+            <a href="detail.html?id=${p.productId}"> 
+                <img src="c${p.categoryId}.png" class="icon">  
+                ${p.productName} 
+            </a>
+                `;
+        return d
+    }
+
+    function showAll() {
+        results.innerHTML = "";
+        fetch("http://localhost:8081/api/products")
+            .then(response => response.json())
+            .then(data => {
+                data.sort(compareName);
+                data.forEach(p => {
+                    results.appendChild(productLink(p));
+                })
+            })
+    }
+    function showResults() {
+        results.innerHTML = "";
+        const id = select.selectedOptions[0].value;
+        results.innerHTML = `<img src="c${id}.png"><br>`;
+        fetch("http://localhost:8081/api/categories/" + id)
+            .then(response => response.json())
+            .then(data => {
+                data.sort(compareName);
+                data.forEach(p => {
+                    results.appendChild(productLink(p));
+                })
+            })
+    }
+    function createSelect() {
+        select = document.createElement("select");
+        fetch("http://localhost:8081/api/categories")
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(c => {
+                    const option = document.createElement("option");
+                    option.value = c.categoryId;
+                    option.innerHTML = c.name;
+                    select.appendChild(option);
+                })
+                select.addEventListener("change", e => showResults())
+                mode.after(select);//insert new select after the mode select.
+                // document.body.appendChild(select);
+            })
+    }
+
+    mode.addEventListener("change", e => {
         const value = mode.selectedOptions[0].value;
-        if("category" == value){
+        if ("category" == value) {
             results.innerHTML = "";
             //create select
             createSelect();
-        }else{
+        } else {
             showAll();
             //destroy select
-            if(undefined !== select){
+            if (undefined !== select) {
                 select.remove();
             }
         }
