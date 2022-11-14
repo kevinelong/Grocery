@@ -1,3 +1,8 @@
+<style>
+    #results{
+        padding: 2em;
+    }
+</style>
 <body>
     <h1>Detail</h1>
     <a href="index.html">Home</a>
@@ -14,13 +19,19 @@ let name = params.get('name');
     let id = params.get('id');
 
     const results = document.getElementById("results");
+
+    function details(product){
+        const d = document.createElement("div");
+        d.classList.add("details");
+        d.innerHTML = `ID: ${product.productId} <br>`;
+        d.innerHTML += `NAME: ${product.productName}`;
+        return d;
+    }
     results.innerHTML = "";
     fetch("http://localhost:8081/api/products/" + id)
         .then(response => response.json())
         .then(p => {
-                const d = document.createElement("div");
-                d.innerHTML = `ID: ${p.productId} <br> NAME: ${p.productName}`;
-                results.appendChild(d);
+                results.appendChild(details(p));
         })
 
 </script>
