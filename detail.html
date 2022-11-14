@@ -1,12 +1,10 @@
-<style>
-    #results{
-        padding: 2em;
-    }
-</style>
+<head>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
 <body>
-    <h1>Detail</h1>
     <a href="index.html">Home</a>
     <a href="products.html">Product Search</a>
+    <h1>Detail</h1>
     <div id="results">Results</div>
 </body>
 <script>
@@ -23,7 +21,8 @@ let name = params.get('name');
     function details(product){
         const d = document.createElement("div");
         d.classList.add("details");
-        d.innerHTML = `ID: ${product.productId} <br>`;
+        d.innerHTML = `<img src="images/c${product.categoryId}.png"><br>`
+        d.innerHTML += `ID: ${product.productId} <br>`;
         d.innerHTML += `NAME: ${product.productName}`;
         return d;
     }

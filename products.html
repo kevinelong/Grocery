@@ -1,41 +1,9 @@
-<style>
-    body{
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        padding: 1em;
-        background: darkolivegreen;
-    }
-    .product {
-        display: inline-block;
-        border: 1px solid black;
-        margin: 1em;
-        min-width: 300px;
-        background: white;
-        line-height: 3em;
-        vertical-align: middle;
-    }
-
-    .product a {
-        display: block;
-        padding: 1em;
-        vertical-align: middle;
-        line-height: 3em;
-        text-decoration: none;
-        color: black;
-    }
-
-    .product a *{
-        vertical-align: middle;
-        line-height: 3em;
-    }
-    .icon{
-        width: 36px;
-        height: 36px;
-    }
-</style>
-
+<head>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
 <body>
-    <h1>Products</h1>
     <a href="index.html">Home</a>
+    <h1>Products</h1>
     <select id="mode">
         <option value="">Select one…</option>
         <option value="category">Search by category</option>
@@ -63,7 +31,7 @@
         d.classList.add("product");
         d.innerHTML = `
             <a href="detail.html?id=${p.productId}"> 
-                <img src="c${p.categoryId}.png" class="icon">  
+                <img src="images/c${p.categoryId}.png" class="icon">  
                 ${p.productName} 
             </a>
                 `;
@@ -84,7 +52,7 @@
     function showResults() {
         results.innerHTML = "";
         const id = select.selectedOptions[0].value;
-        results.innerHTML = `<img src="c${id}.png"><br>`;
+        results.innerHTML = `<img src="images/c${id}.png"><br>`;
         fetch("http://localhost:8081/api/categories/" + id)
             .then(response => response.json())
             .then(data => {
