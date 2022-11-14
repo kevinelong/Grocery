@@ -22,7 +22,7 @@
         text-decoration: none;
         color: black;
     }
-    
+
     .product a *{
         vertical-align: middle;
         line-height: 3em;
@@ -99,6 +99,7 @@
         fetch("http://localhost:8081/api/categories")
             .then(response => response.json())
             .then(data => {
+                select.innerHTML = `<option value="0">Select a Category:</option>`;
                 data.forEach(c => {
                     const option = document.createElement("option");
                     option.value = c.categoryId;
@@ -125,4 +126,5 @@
             }
         }
     })
+    mode.selectedIndex = 0; //select first explicitly so browser does not try to remember
 </script>
